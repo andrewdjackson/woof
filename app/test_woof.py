@@ -1,5 +1,6 @@
 from hamcrest import *
-from woof import *
+from woof import Woof
+from woof_events import EVENT_YAPPING, EVENT_STARTED,EVENT_STOPPED
 
 
 def test_bark():

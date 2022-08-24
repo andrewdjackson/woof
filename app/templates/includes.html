@@ -9,7 +9,7 @@
 <script type="text/javascript">
 	var woof;
 
-	import('./static/js/woof.js')
+	import('/static/js/woof.js')
 			.then((Module) => {
 				let uri = window.location.href.split("/").slice(0, 3).join("/");
 				woof = new Module.Woof(uri);

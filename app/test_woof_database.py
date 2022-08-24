@@ -1,5 +1,6 @@
 from hamcrest import *
 from woof_database import *
+from woof_events import EVENT_STARTED, EVENT_STOPPED, EVENT_TEST, get_current_date_and_time
 
 def test_connect():
     wdb = WoofDatabase()
@@ -22,16 +23,20 @@ def test_intialise_database():
 
     wdb.close()
 
-def test_write():
-    record = {"date" : "01/01/2022 00:00:00", "event": "started", "description":"test"}
+def test_write_barking_started():
+    date = get_current_date_and_time()
+    record = {"date" : date, "event": EVENT_STARTED, "description": EVENT_TEST}
 
     wdb = WoofDatabase()
     wdb.connect()
     assert_that( wdb.write(record), equal_to(True) )
     wdb.close()
 
-def test_delete():
+def test_write_barking_stopped():
+    date = get_current_date_and_time()
+    record = {"date" : date, "event": EVENT_STOPPED, "description": EVENT_TEST}
+
     wdb = WoofDatabase()
     wdb.connect()
-    assert_that( wdb.delete(), equal_to(True) )
+    assert_that( wdb.write(record), equal_to(True) )
     wdb.close()

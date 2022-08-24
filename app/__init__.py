@@ -1,6 +1,16 @@
+import os
+import sys
+
+#
+# add the app folder to the system path so the application classes and modules can be found
+#
+basedir = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(basedir)
+sys.path.append(basedir + "/app")
+
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session, flash, make_response
 from flask_wtf.csrf import CSRFProtect, CSRFError
-from woof import *
+from woof import Woof
 from woof_database import WoofDatabase
 
 app = Flask(__name__)

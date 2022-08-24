@@ -1,4 +1,5 @@
 import sqlite3
+from woof_events import EVENT_STARTED, EVENT_STOPPED, EVENT_TEST
 
 class WoofDatabase():
 
@@ -17,21 +18,25 @@ class WoofDatabase():
             self.connected = False
 
     def write(self, record):
-        sql = f"insert into diary (dt, event, desc) values ('{record['date']}', '{record['event']}', '{record['description']}')"
+        if record["event"] == EVENT_STARTED:
+            sql = f"insert into diary (start_time, end_time, description) values ('{record['date']}', '{record['date']}', '{record['description']}')"
+        else:
+            sql = f"update diary set end_time = '{record['date']}' WHERE id = (SELECT MAX(id) FROM diary)"
+
         if self.connected:
             return self.execute_sql(sql)
 
         return False
 
     def delete(self):
-        sql = f"delete from diary where desc ='test'"
+        sql = f"delete from diary where desc ='{EVENT_TEST}'"
         if self.connected:
             return self.execute_sql(sql)
 
         return False
 
     def initialise(self):
-        sql = "create table if not exists diary ( dt text unique not null, event text not null, desc text default '')"
+        sql = "create table if not exists diary ( id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TEXT unique not null, end_time TEXT unique not null, description TEXT default '')"
         if self.connected:
             return self.execute_sql(sql)
 

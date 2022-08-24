@@ -1,0 +1,17 @@
+<!-- JQuery 3.6 -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Bootstrap 4.6 -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.1/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css">
+
+<script type="text/javascript">
+	var woof;
+
+	import('./static/js/woof.js')
+			.then((Module) => {
+				let uri = window.location.href.split("/").slice(0, 3).join("/");
+				woof = new Module.Woof(uri);
+			});
+</script>

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="MemsFCR Online Analysis">
+	<meta name="author" content="Andrew Jackson">
+	<meta name="google" content="notranslate"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<title>Woof!</title>
+
+	{% include 'includes.html' %}
+</head>
+
+<body>
+<div class="page-wrapper toggled">
+	<header>
+		{% include 'header.html' %}
+	</header>
+
+	<main class="page-content">
+		<div class="container-fluid">
+			<div class="tab-content">
+
+				<!-- upload -->
+				<div id="upload" class="tab-pane container-fluid active">
+					<div class="card mt-3">
+						<div class="card-body text-center">
+							<button type="button" class="btn btn-danger mb-3" onclick="woof.started('Yapping');">
+								Yapping
+							</button>
+							<button type="button" class="btn btn-danger mb-3" onclick="woof.started('Barking');">
+								Barking
+							</button>
+							<button type="button" class="btn btn-danger mb-3" onclick="woof.started('Barking (encouraged)');">
+								Encouraged
+							</button>
+							<button type="button" class="btn btn-success mb-3" onclick="woof.stopped();">
+								All Quiet
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer class="page-footer font-small pt-4">
+		{% include 'footer.html' %}
+	</footer>
+
+</div>
+
+</body>
+</html>

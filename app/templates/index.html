@@ -24,7 +24,7 @@
 			<div class="tab-content">
 
 				<!-- record -->
-				<div id="record" class="tab-pane container-fluid active">
+				<div id="record" class="tab-pane fade show active" aria-labelledby="record">
 					<div class="card mt-3">
 						<div class="card-body text-center">
 							<button id="yapping" type="button" class="btn btn-danger mb-3" onclick="woof.started('Yapping');">
@@ -47,7 +47,7 @@
 
 
 				<!-- diary -->
-				<div id="diary" class="tab-pane container-fluid">
+				<div id="diary" class="tab-pane fade" aria-labelledby="diary">
 					<div class="card mt-3">
 						<div class="card-body">
 							{% include 'diary.html' %}

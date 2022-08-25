@@ -79,7 +79,7 @@ export class Woof {
     _createDataTable(data) {
         let titles = ["Start Time", "End Time", "Description"];
 
-        const tableHeader = "<thead class='thead-dark'><tr>" +
+        const tableHeader = "<thead class='table-dark'><tr>" +
             " <th scope='col'>Start Time</th>" +
             " <th scope='col'>End Time</th>" +
             " <th scope='col'>Description</th>" +
@@ -94,7 +94,7 @@ export class Woof {
 
         tableBody += "</tbody>"
 
-        let table = "<table class='table table-striped'>" + tableHeader + tableBody + "</table>"
+        let table = "<table class='table table-responsive-md table-striped table-bordered border-secondary'>" + tableHeader + tableBody + "</table>"
 
         const id = document.getElementById("diaryTable");
         id.innerHTML = `${table}`;

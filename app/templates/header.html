@@ -1,13 +1,10 @@
-<div class="bg-info">
-<h1 class="text-white text-center">Woof!</h1>
+<div class="text-white" style="background-color:steelblue;">
+	<h1 class="text-center">Woof!</h1>
 </div>
+
 <nav class="navbar-light bg-light">
-	<ul class="nav nav-tabs">
-		<li class="nav-item">
-			<a href="#record" class="navbar-brand nav-link" data-toggle="tab" class="nav-link active">Record</a>
-		</li>
-		<li class="nav-item">
-			<a href="#diary" onclick="woof.getDiary()" class="navbar-brand nav-link" data-toggle="tab" class="nav-link">Diary</a>
-		</li>
-	</ul>
+	<div class="nav nav-tabs" id="nav-tab" role="tablist">
+		<button class="nav-link navbar-brand active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#record" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Record</button>
+		<button onclick="woof.getDiary()" class="nav-link navbar-brand" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#diary" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Diary</button>
+	</div>
 </nav>

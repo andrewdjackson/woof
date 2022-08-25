@@ -1,8 +1,23 @@
 import {Endpoints, SendRequest} from "./woof-server.js"
+import {addClass, removeClass} from "./woof-helpers.js"
+
+export const buttons = {
+    yapping : "yapping",
+    barking : "barking",
+    encouraged : "encouraged",
+    quiet: "quiet",
+};
+
+export const events = {
+    started : "started",
+    stopped : "stopped",
+};
 
 export class Woof {
     constructor(uri) {
         this._baseUri = uri;
+        this.durationInterval;
+        this.elapasedTime = 0;
     }
 
     started(description) {
@@ -21,7 +36,9 @@ export class Woof {
 
     _startedStatus(data) {
         console.info("started status " + JSON.stringify(data));
-        return data;
+        this._startDurationTimer();
+        this._updateStatus(data);
+        return status;
     }
 
     stopped() {
@@ -37,7 +54,50 @@ export class Woof {
 
     _stoppedStatus(data) {
         console.info("stopped status " + JSON.stringify(data));
+        this._stopDurationTimer();
+        this._updateStatus(data);
         return data;
+    }
+
+    getDiary() {
+        let endpoint = this._getEndpoint(Endpoints.diary);
+
+        console.info(`diary --> ${endpoint}`)
+
+        return SendRequest('GET', endpoint)
+            .then(data => this._diaryStatus(data))
+            .then(response => { return response; })
+            .catch(err => this._restError(err));
+    }
+
+    _diaryStatus(data) {
+        console.info("diary status " + JSON.stringify(data));
+        this._createDataTable(data)
+        return data;
+    }
+
+    _createDataTable(data) {
+        let titles = ["Start Time", "End Time", "Description"];
+
+        const tableHeader = "<thead class='thead-dark'><tr>" +
+            " <th scope='col'>Start Time</th>" +
+            " <th scope='col'>End Time</th>" +
+            " <th scope='col'>Description</th>" +
+            "</tr></thead>"
+
+        let tableBody = "<tbody>";
+
+        for (let i =0; i < data.length; i++) {
+            let record = data[i]
+            tableBody += `<tr><td>${record.start_time}</td><td>${record.end_time}</td><td>${record.description}</td></tr>`
+        }
+
+        tableBody += "</tbody>"
+
+        let table = "<table class='table table-striped'>" + tableHeader + tableBody + "</table>"
+
+        const id = document.getElementById("diaryTable");
+        id.innerHTML = `${table}`;
     }
 
     _getEndpoint(endpoint) {
@@ -45,6 +105,57 @@ export class Woof {
     }
 
     _restError(err) {
-        throw new Error(`request failed (${err})`);
+       console.error(`request failed (${err})`);
+    }
+
+    _updateStatus(status) {
+        const id = document.getElementById("status");
+        if (status.status === 200) {
+            id.innerHTML = `${status.description} ${status.event} at ${status.date}`;
+        }
+
+        this._disableButtons(status);
+    }
+
+    _startDurationTimer() {
+        this._stopDurationTimer();
+
+        this.elapasedTime = 0;
+        this.durationInterval = setInterval(function() {this._updateDuration()}.bind(this), 1000);
+    }
+
+    _stopDurationTimer() {
+        clearInterval(this.durationInterval);
+    }
+
+    _updateDuration() {
+        this.elapasedTime++;
+        const id = document.getElementById("duration");
+        id.innerHTML = `${this.elapasedTime} seconds elapsed`;
+    }
+
+    _disableButtons(status) {
+        if (status.event === events.started ) {
+            this._setButtonState(buttons.yapping, false);
+            this._setButtonState(buttons.barking, false);
+            this._setButtonState(buttons.encouraged, false);
+            this._setButtonState(buttons.quiet, true);
+        } else {
+            this._setButtonState(buttons.yapping, true);
+            this._setButtonState(buttons.barking, true);
+            this._setButtonState(buttons.encouraged, true);
+            this._setButtonState(buttons.quiet, false);
+        }
+    }
+
+    _setButtonState(button, enabled) {
+        const id = document.getElementById(button);
+        if (enabled) {
+            removeClass(id, "disabled");
+            id.disabled = ""
+        } else {
+            addClass(id, "disabled");
+            id.disabled = "true"
+        }
     }
 }

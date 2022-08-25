@@ -23,25 +23,38 @@
 		<div class="container-fluid">
 			<div class="tab-content">
 
-				<!-- upload -->
-				<div id="upload" class="tab-pane container-fluid active">
+				<!-- record -->
+				<div id="record" class="tab-pane container-fluid active">
 					<div class="card mt-3">
 						<div class="card-body text-center">
-							<button type="button" class="btn btn-danger mb-3" onclick="woof.started('Yapping');">
+							<button id="yapping" type="button" class="btn btn-danger mb-3" onclick="woof.started('Yapping');">
 								Yapping
 							</button>
-							<button type="button" class="btn btn-danger mb-3" onclick="woof.started('Barking');">
+							<button id="barking" type="button" class="btn btn-danger mb-3" onclick="woof.started('Barking');">
 								Barking
 							</button>
-							<button type="button" class="btn btn-danger mb-3" onclick="woof.started('Barking (encouraged)');">
+							<button id="encouraged" type="button" class="btn btn-danger mb-3" onclick="woof.started('Barking (encouraged)');">
 								Encouraged
 							</button>
-							<button type="button" class="btn btn-success mb-3" onclick="woof.stopped();">
+							<button id="quiet" type="button" class="btn btn-success mb-3" onclick="woof.stopped();">
 								All Quiet
 							</button>
+							<div id="status"></div>
+							<div id="duration"></div>
 						</div>
 					</div>
 				</div>
+
+
+				<!-- diary -->
+				<div id="diary" class="tab-pane container-fluid">
+					<div class="card mt-3">
+						<div class="card-body">
+							{% include 'diary.html' %}
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</div>
 	</main>

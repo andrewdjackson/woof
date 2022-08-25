@@ -1,3 +1,9 @@
+export const Endpoints = {
+    started: "/started",
+    stopped: "/stopped",
+    diary: "/diary",
+}
+
 export class APIError extends Error {
     constructor(message, response) {
         super(message);
@@ -33,9 +39,4 @@ export const SendRequest = async function (method, endpoint, body) {
     }
 
     return data;
-}
-
-export const Endpoints = {
-    started: "/started",
-    stopped: "/stopped",
 }

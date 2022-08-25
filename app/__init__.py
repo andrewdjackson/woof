@@ -8,7 +8,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(basedir)
 sys.path.append(basedir + "/app")
 
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session, flash, make_response
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session, flash, make_response, jsonify
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from woof import Woof
 from woof_database import WoofDatabase
@@ -31,14 +31,36 @@ def started():
     woof = Woof()
     woof.record_start(data["description"])
     woof.write_record()
-    return {"status":200}
+
+    status = woof.record
+    if woof.written:
+        status["status"] = 200
+    else:
+        status["status"] = 500
+
+    return status
 
 @app.route('/stopped', methods=['POST'])
 def stopped():
     woof = Woof()
     woof.record_stop()
     woof.write_record()
-    return {"status":200}
+
+    status = woof.record
+
+    if woof.written:
+        status["status"] = 200
+    else:
+        status["status"] = 500
+
+    return status
+
+@app.route('/diary', methods=['GET'])
+def diary():
+    woof = Woof()
+    diary = woof.get_diary()
+    return jsonify(diary)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

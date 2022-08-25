@@ -40,3 +40,10 @@ def test_write_barking_stopped():
     wdb.connect()
     assert_that( wdb.write(record), equal_to(True) )
     wdb.close()
+
+def test_read_diary():
+    wdb = WoofDatabase()
+    wdb.connect()
+    records = wdb.read()
+    assert_that( records, not_none() )
+    wdb.close()

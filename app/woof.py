@@ -4,6 +4,9 @@ from woof_events import EVENT_STARTED, EVENT_STOPPED, get_current_date_and_time
 class Woof:
 
     def __init__(self):
+        self.initialised = False
+        self.written = False
+
         self.init_database()
 
         dt = get_current_date_and_time()
@@ -19,14 +22,22 @@ class Woof:
         self.record["event"] = EVENT_STOPPED
         return self.record
 
+    def get_diary(self):
+        db = WoofDatabase()
+        db.connect()
+        records = db.read()
+        db.close()
+
+        return records
+
     def init_database(self):
         db = WoofDatabase()
         db.connect()
-        db.initialise()
+        self.initialised = db.initialise()
         db.close()
 
     def write_record(self):
         db = WoofDatabase()
         db.connect()
-        db.write(self.record)
+        self.written = db.write(self.record)
         db.close()

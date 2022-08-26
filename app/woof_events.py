@@ -1,4 +1,5 @@
 from datetime import datetime
+import pytz
 
 EVENT_STARTED = "started"
 EVENT_STOPPED = "stopped"
@@ -9,5 +10,6 @@ EVENT_OTHER = "Other"
 EVENT_TEST = "TEST"
 
 def get_current_date_and_time():
-    now = datetime.now()
+    tz = pytz.timezone('Europe/London')
+    now = datetime.now(tz)
     return now.strftime("%d/%m/%Y %H:%M:%S")

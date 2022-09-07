@@ -19,5 +19,59 @@ def test_end_barking():
     assert_that(dt["event"], equal_to(EVENT_STOPPED))
     is_a_date_time_string(dt["date"])
 
+def test_diary():
+    wf = Woof()
+    dt = wf.get_diary()
+    assert_that(dt, has_length(greater_than(1)))
+
+def test_event_is_within_5_minutes():
+    wf = Woof()
+    records = []
+    records.append({ 'start_time': '01/01/2000 10:00:00', 'end_time': '01/01/2000 10:00:00', 'description':EVENT_YAPPING })
+    records.append({ 'start_time': '01/01/2000 10:05:00', 'end_time': '01/01/2000 10:05:00', 'description':EVENT_YAPPING })
+
+    is_within_5_minutes = wf.is_event_within_time(records[0], records[1])
+    assert_that(is_within_5_minutes, equal_to(True))
+
+def test_event_is_not_within_5_minutes():
+    wf = Woof()
+    records = []
+    records.append({ 'start_time': '01/01/2000 10:00:00', 'end_time': '01/01/2000 10:00:00', 'description':EVENT_YAPPING })
+    records.append({ 'start_time': '01/01/2000 10:06:00', 'end_time': '01/01/2000 10:06:00', 'description':EVENT_YAPPING })
+
+    is_within_5_minutes = wf.is_event_within_time(records[0], records[1])
+    assert_that(is_within_5_minutes, equal_to(False))
+
+def test_event_is_not_within_5_minutes_if_different_days():
+    wf = Woof()
+    records = []
+    records.append({ 'start_time': '01/01/2000 10:00:00', 'end_time': '01/01/2000 10:00:00', 'description':EVENT_YAPPING })
+    records.append({ 'start_time': '01/02/2000 10:05:00', 'end_time': '01/02/2000 10:05:00', 'description':EVENT_YAPPING })
+
+    is_within_5_minutes = wf.is_event_within_time(records[0], records[1])
+    assert_that(is_within_5_minutes, equal_to(False))
+
+def test_diary_events_are_consolidated_if_events_are_within_5_minutes():
+    wf = Woof()
+    records = []
+    records.append({ 'start_time': '01/01/2000 10:00:00', 'end_time': '01/01/2000 10:00:00', 'description':EVENT_YAPPING })
+    records.append({ 'start_time': '01/01/2000 10:05:00', 'end_time': '01/01/2000 10:05:00', 'description':EVENT_YAPPING })
+
+    records.append({ 'start_time': '01/01/2000 10:15:00', 'end_time': '01/01/2000 10:15:00', 'description':EVENT_YAPPING })
+
+    records.append({ 'start_time': '01/01/2000 10:25:00', 'end_time': '01/01/2000 10:25:00', 'description':EVENT_YAPPING })
+
+    records.append({ 'start_time': '01/01/2000 11:00:00', 'end_time': '01/01/2000 11:00:00', 'description':EVENT_YAPPING })
+    records.append({ 'start_time': '01/01/2000 11:05:00', 'end_time': '01/01/2000 11:05:00', 'description':EVENT_YAPPING })
+    records.append({ 'start_time': '01/01/2000 11:10:00', 'end_time': '01/01/2000 11:10:00', 'description':EVENT_YAPPING })
+
+    records.append({ 'start_time': '01/01/2000 12:00:00', 'end_time': '01/01/2000 12:10:00', 'description':EVENT_YAPPING })
+
+    diary = wf.concatenate_events(records)
+    assert_that(diary, has_length(equal_to(5)))
+
+
 def is_a_date_time_string(dt):
     assert_that(dt, matches_regexp(r"^[0-9]{2}.[0-9]{2}.[0-9]{4}.[0-9]{2}.[0-9]{2}.[0-9]{2}$"))
+
+

@@ -24,13 +24,26 @@ def test_diary():
     dt = wf.get_diary()
     assert_that(dt, has_length(greater_than(1)))
 
+def test_event_is_longer_than_max_duration():
+    wf = Woof()
+    records = []
+    records.append({ 'start_time': '01/01/2000 10:00:00', 'end_time': '01/01/2000 10:50:00', 'description':EVENT_YAPPING })
+    is_longer_than_max_duration = wf.is_event_too_long(records[0], 45)
+
+    assert_that(is_longer_than_max_duration, equal_to(True))
+
+    records = wf.truncate_extra_long_events(records, 45)
+
+    assert_that(records[0]['end_time'], equal_to('01/01/2000 10:45:00'))
+
+
 def test_event_is_within_5_minutes():
     wf = Woof()
     records = []
     records.append({ 'start_time': '01/01/2000 10:00:00', 'end_time': '01/01/2000 10:00:00', 'description':EVENT_YAPPING })
     records.append({ 'start_time': '01/01/2000 10:05:00', 'end_time': '01/01/2000 10:05:00', 'description':EVENT_YAPPING })
 
-    is_within_5_minutes = wf.is_event_within_time(records[0], records[1])
+    is_within_5_minutes = wf.is_part_of_previous_event(records[0], records[1])
     assert_that(is_within_5_minutes, equal_to(True))
 
 def test_event_is_not_within_5_minutes():
@@ -39,7 +52,7 @@ def test_event_is_not_within_5_minutes():
     records.append({ 'start_time': '01/01/2000 10:00:00', 'end_time': '01/01/2000 10:00:00', 'description':EVENT_YAPPING })
     records.append({ 'start_time': '01/01/2000 10:06:00', 'end_time': '01/01/2000 10:06:00', 'description':EVENT_YAPPING })
 
-    is_within_5_minutes = wf.is_event_within_time(records[0], records[1])
+    is_within_5_minutes = wf.is_part_of_previous_event(records[0], records[1])
     assert_that(is_within_5_minutes, equal_to(False))
 
 def test_event_is_not_within_5_minutes_if_different_days():
@@ -48,7 +61,7 @@ def test_event_is_not_within_5_minutes_if_different_days():
     records.append({ 'start_time': '01/01/2000 10:00:00', 'end_time': '01/01/2000 10:00:00', 'description':EVENT_YAPPING })
     records.append({ 'start_time': '01/02/2000 10:05:00', 'end_time': '01/02/2000 10:05:00', 'description':EVENT_YAPPING })
 
-    is_within_5_minutes = wf.is_event_within_time(records[0], records[1])
+    is_within_5_minutes = wf.is_part_of_previous_event(records[0], records[1])
     assert_that(is_within_5_minutes, equal_to(False))
 
 def test_diary_events_are_consolidated_if_events_are_within_5_minutes():

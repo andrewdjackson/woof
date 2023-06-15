@@ -36,6 +36,15 @@ def test_event_is_longer_than_max_duration():
 
     assert_that(records[0]['end_time'], equal_to('01/01/2000 10:45:00'))
 
+def test_event_duration_is_valid():
+    wf = Woof()
+    records = []
+    records.append({ 'start_time': '01/01/2000 11:00:00', 'end_time': '01/01/2000 10:00:00', 'description':EVENT_YAPPING })
+    records.append({ 'start_time': '01/01/2000 10:05:00', 'end_time': '01/01/2000 11:05:00', 'description':EVENT_YAPPING })
+
+    records = wf.clean_invalid_durations(records)
+    assert_that(records[0]['start_time'], equal_to(records[0]['end_time']))
+    assert_that(records[1]['start_time'], is_not(equal_to(records[1]['end_time'])))
 
 def test_event_is_within_5_minutes():
     wf = Woof()

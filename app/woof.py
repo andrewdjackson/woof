@@ -32,6 +32,7 @@ class Woof:
         records = db.read()
         db.close()
 
+        records = self.clean_invalid_durations(records)
         #records = self.truncate_extra_long_events(records, MAXIMUM_EVENT_DURATION)
         return self.concatenate_events(records)
 
@@ -58,6 +59,16 @@ class Woof:
 
         concatenated_records.append(last_event)
         return concatenated_records
+
+    def clean_invalid_durations(self, records):
+        for record in records:
+            end_time = datetime.strptime(record['end_time'], '%d/%m/%Y %H:%M:%S')
+            start_time = datetime.strptime(record['start_time'], '%d/%m/%Y %H:%M:%S')
+
+            if start_time > end_time:
+                record['start_time'] = record['end_time']
+
+        return records
 
     def truncate_extra_long_events(self, records, max_duration):
         for record in records:

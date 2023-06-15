@@ -1,0 +1,51 @@
+.calendar .calendar-header {
+    background-color: #CC251F;
+    color: white;
+    border: 0;
+    font-family: inherit;
+}
+
+.calendar .calendar-header .year-title:hover,
+.calendar .calendar-header .prev:hover,
+.calendar .calendar-header .next:hover{
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.calendar .calendar-header .year-neighbor {
+    color: inherit;
+    opacity: 0.7;
+}
+
+.calendar .calendar-header .year-neighbor2 {
+    color: inherit;
+    opacity: 0.4;
+}
+
+.calendar .month-container {
+    height: 210px;
+    font-family: inherit;
+}
+
+.calendar table.month {
+    height: 100%;
+}
+
+.calendar table.month .month-title {
+    background-color: #CC251F;
+    color: white;
+    padding: 5px;
+}
+
+.calendar table.month .day-header {
+    padding-top: 8px;
+    border-bottom: 1px solid rgba(162, 162, 162, 0.35);
+}
+
+.calendar table.month td.day .day-content {
+    padding: 5px 8px;
+}
+
+.event-tooltip-content {
+    font-family: courier-new, courier, monospace;
+    font-size: small;
+}

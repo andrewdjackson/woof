@@ -72,8 +72,84 @@ export class Woof {
 
     _diaryStatus(data) {
         console.info("diary status " + JSON.stringify(data));
-        this._createDataTable(data)
+        this._displayCalendar(data);
+        this._createDataTable(data);
         return data;
+    }
+
+    _displayCalendar(data) {
+        let currentYear = 2023
+        var calendar = new Calendar('#calendar', {
+            style: "background",
+            enableContextMenu: true,
+            enableRangeSelection: false,
+            mouseOnDay: function(e) {
+                if(e.events.length > 0) {
+                    var content = '';
+
+                    for(var i in e.events) {
+                        let event = e.events[i];
+                        let startTime = `${event.startDate.getHours()}:${event.startDate.getMinutes()}`;
+                        let endTime = `${event.endDate.getHours()}:${event.endDate.getMinutes()}`;
+
+                        content += '<div class="event-tooltip-content">'
+                            + `<div class="event-description" style="color:${event.color}">${startTime} - ${endTime} ${event.description}</div>`
+                            + '</div>';
+                    }
+
+                    $(e.element).popover({
+                        trigger: 'manual',
+                        container: 'body',
+                        html:true,
+                        content: content
+                    });
+
+                    $(e.element).popover('show');
+                }
+            },
+            mouseOutDay: function(e) {
+                if(e.events.length > 0) {
+                    $(e.element).popover('hide');
+                }
+            },
+            dayContextMenu: function(e) {
+                $(e.element).popover('hide');
+            },
+            dataSource: this._getCalendarData(data)
+        });
+
+        calendar.setMinDate(new Date("01/01/2022"));
+        calendar.setMaxDate(new Date());
+        calendar.setDataSource = this._getCalendarData(data);
+    }
+
+    _getCalendarData(data) {
+        let calendarData = []
+
+        for (let i =0; i < data.length; i++) {
+            let record = data[i]
+            let start_time = this._getDateFromString(record.start_time);
+            let end_time = this._getDateFromString(record.end_time);
+
+            calendarData.push({
+                id:i,
+                description: record.description,
+                startDate:start_time,
+                endDate:end_time
+            });
+        }
+
+        return calendarData;
+    }
+
+    _getDateFromString(dateString) {
+        let dateDay = dateString.slice(0,2);
+        let dateMonth = dateString.slice(3,5);
+        let dateYear = dateString.slice(6,10);
+        let dateTime = dateString.slice(11);
+
+        let newDateString = `${dateYear}/${dateMonth}/${dateDay} ${dateTime}`;
+        return new Date(newDateString);
     }
 
     _createDataTable(data) {

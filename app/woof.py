@@ -33,7 +33,7 @@ class Woof:
         db.close()
 
         records = self.clean_invalid_durations(records)
-        #records = self.truncate_extra_long_events(records, MAXIMUM_EVENT_DURATION)
+        records = self.truncate_extra_long_events(records, MAXIMUM_EVENT_DURATION)
         return self.concatenate_events(records)
 
     def concatenate_events(self, records):
@@ -85,10 +85,10 @@ class Woof:
         return this_event
 
     def is_event_too_long(self, this_event, max_duration):
-        end_time = datetime.strptime(this_event['end_time'], '%d/%m/%Y %H:%M:%S')
         start_time = datetime.strptime(this_event['start_time'], '%d/%m/%Y %H:%M:%S')
+        end_time = datetime.strptime(this_event['end_time'], '%d/%m/%Y %H:%M:%S')
 
-        return self.is_event_duration_less_than(start_time, end_time, max_duration)
+        return not self.is_event_duration_less_than(start_time, end_time, max_duration)
 
     def is_part_of_previous_event(self, last_event, this_event):
         end_time = datetime.strptime(last_event['end_time'], '%d/%m/%Y %H:%M:%S')

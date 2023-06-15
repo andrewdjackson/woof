@@ -78,7 +78,7 @@ export class Woof {
     }
 
     _displayCalendar(data) {
-        let currentYear = 2023
+        let currentYear = new Date().getFullYear();
 
         var calendar = new Calendar('#calendar', {
             style: "background",
@@ -96,8 +96,8 @@ export class Woof {
             dataSource: this._getCalendarData(data)
         });
 
-        calendar.setMinDate(new Date("01/01/2022"));
-        //calendar.setMaxDate(new Date());
+        calendar.setMinDate(new Date("08/01/2022"));
+        calendar.setMaxDate(new Date());
         calendar.setDataSource = this._getCalendarData(data);
     }
 

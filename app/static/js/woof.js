@@ -1,5 +1,5 @@
 import {Endpoints, SendRequest} from "./woof-server.js"
-import {addClass, removeClass, formatEventTime} from "./woof-helpers.js"
+import {addClass, removeClass, formatEventTime, datesAreOnTheSameDay} from "./woof-helpers.js"
 
 export const buttons = {
     yapping : "yapping",
@@ -128,15 +128,27 @@ export class Woof {
 
     _getCalendarData(data) {
         let calendarData = []
+        let currentDay = undefined;
+        let count = 0;
 
         for (let i= 0; i < data.length; i++) {
             let record = data[i]
             let start_time = this._getDateFromString(record.start_time);
             let end_time = this._getDateFromString(record.end_time);
 
+            if (datesAreOnTheSameDay(start_time, currentDay)) {
+                count++;
+            } else {
+                count = 0;
+                currentDay = start_time;
+            }
+
+            let color = this._getColor(count);
+
             calendarData.push({
                 id:i,
-                //color: "#78bc0a",
+                color: color,
+                count: count,
                 description: record.description,
                 startDate:start_time,
                 endDate:end_time
@@ -144,6 +156,22 @@ export class Woof {
         }
 
         return calendarData;
+    }
+
+    _getColor(count) {
+        if (count <= 1) {
+            return "#78bc0a"
+        }
+
+        if (count <= 3) {
+            return "#e8d559"
+        }
+
+        if (count <= 5) {
+            return "rgba(248,182,69,0.9)"
+        }
+
+        return "#ea4b37"
     }
 
     _getDateFromString(dateString) {

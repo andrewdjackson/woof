@@ -32,7 +32,7 @@ class Woof:
         records = db.read()
         db.close()
 
-        records = self.truncate_extra_long_events(records, MAXIMUM_EVENT_DURATION)
+        #records = self.truncate_extra_long_events(records, MAXIMUM_EVENT_DURATION)
         return self.concatenate_events(records)
 
     def concatenate_events(self, records):

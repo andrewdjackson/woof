@@ -23,3 +23,13 @@ export function removeClass(el, className)
         el.className = el.className.replace(reg, ' ');
     }
 }
+
+export function formatEventTime(eventDate) {
+    let hours = formatWithLeadingZero(eventDate.getHours());
+    let mins = formatWithLeadingZero(eventDate.getMinutes());
+    return `${hours}:${mins}`;
+}
+
+export function formatWithLeadingZero(value) {
+    return('0' + value).slice(-2);
+}

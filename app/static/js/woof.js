@@ -1,5 +1,5 @@
 import {Endpoints, SendRequest} from "./woof-server.js"
-import {addClass, removeClass} from "./woof-helpers.js"
+import {addClass, removeClass, formatEventTime} from "./woof-helpers.js"
 
 export const buttons = {
     yapping : "yapping",
@@ -79,34 +79,12 @@ export class Woof {
 
     _displayCalendar(data) {
         let currentYear = 2023
+
         var calendar = new Calendar('#calendar', {
             style: "background",
             enableContextMenu: true,
             enableRangeSelection: false,
-            mouseOnDay: function(e) {
-                if(e.events.length > 0) {
-                    var content = '';
-
-                    for(var i in e.events) {
-                        let event = e.events[i];
-                        let startTime = `${event.startDate.getHours()}:${event.startDate.getMinutes()}`;
-                        let endTime = `${event.endDate.getHours()}:${event.endDate.getMinutes()}`;
-
-                        content += '<div class="event-tooltip-content">'
-                            + `<div class="event-description" style="color:${event.color}">${startTime} - ${endTime} ${event.description}</div>`
-                            + '</div>';
-                    }
-
-                    $(e.element).popover({
-                        trigger: 'manual',
-                        container: 'body',
-                        html:true,
-                        content: content
-                    });
-
-                    $(e.element).popover('show');
-                }
-            },
+            mouseOnDay: this._showEventsForDay,
             mouseOutDay: function(e) {
                 if(e.events.length > 0) {
                     $(e.element).popover('hide');
@@ -119,20 +97,46 @@ export class Woof {
         });
 
         calendar.setMinDate(new Date("01/01/2022"));
-        calendar.setMaxDate(new Date());
+        //calendar.setMaxDate(new Date());
         calendar.setDataSource = this._getCalendarData(data);
+    }
+
+    _showEventsForDay(e) {
+        if(e.events.length > 0) {
+            var content = '';
+
+            for(var i in e.events) {
+                let event = e.events[i];
+                let startTime = formatEventTime(event.startDate);
+                let endTime = formatEventTime(event.endDate);
+
+                content += '<div class="event-tooltip-content">'
+                    + `<div class="event-description" style="color:${event.color}">${startTime} - ${endTime} ${event.description}</div>`
+                    + '</div>';
+            }
+
+            $(e.element).popover({
+                trigger: 'manual',
+                container: 'body',
+                html:true,
+                content: content
+            });
+
+            $(e.element).popover('show');
+        }
     }
 
     _getCalendarData(data) {
         let calendarData = []
 
-        for (let i =0; i < data.length; i++) {
+        for (let i= 0; i < data.length; i++) {
             let record = data[i]
             let start_time = this._getDateFromString(record.start_time);
             let end_time = this._getDateFromString(record.end_time);
 
             calendarData.push({
                 id:i,
+                //color: "#78bc0a",
                 description: record.description,
                 startDate:start_time,
                 endDate:end_time

@@ -1,5 +1,5 @@
 from hamcrest import *
-from woof import Woof
+from woof import Woof, is_event_duration_less_than
 from woof_events import EVENT_YAPPING, EVENT_STARTED,EVENT_STOPPED
 
 
@@ -28,9 +28,9 @@ def test_event_is_longer_than_max_duration():
     wf = Woof()
     records = []
     records.append({ 'start_time': '01/01/2000 10:00:00', 'end_time': '01/01/2000 10:50:00', 'description':EVENT_YAPPING })
-    is_longer_than_max_duration = wf.is_event_too_long(records[0], 45)
+    is_longer_than_max_duration = is_event_duration_less_than(records[0]['start_time'], records[0]['end_time'], 45)
 
-    assert_that(is_longer_than_max_duration, equal_to(True))
+    assert_that(is_longer_than_max_duration, equal_to(False))
 
     records = wf.truncate_extra_long_events(records, 45)
 

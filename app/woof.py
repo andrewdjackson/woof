@@ -3,7 +3,15 @@ from woof_events import EVENT_STARTED, EVENT_STOPPED, get_current_date_and_time
 from datetime import datetime, timedelta
 
 MINIMUM_MINUTES_BETWEEN_EVENTS = 5
-MAXIMUM_EVENT_DURATION = 40
+MAXIMUM_EVENT_DURATION = 30
+
+
+def is_event_duration_less_than(start_time, end_time, duration_in_minutes):
+    time_delta = start_time - end_time
+
+    minutes = time_delta.total_seconds() / 60
+    return minutes <= duration_in_minutes
+
 
 class Woof:
 
@@ -33,7 +41,7 @@ class Woof:
         db.close()
 
         records = self.clean_invalid_durations(records)
-        records = self.truncate_extra_long_events(records, MAXIMUM_EVENT_DURATION)
+        #records = self.truncate_extra_long_events(records, MAXIMUM_EVENT_DURATION)
         return self.concatenate_events(records)
 
     def concatenate_events(self, records):
@@ -61,46 +69,49 @@ class Woof:
         return concatenated_records
 
     def clean_invalid_durations(self, records):
+        clean_records = []
+
         for record in records:
-            end_time = datetime.strptime(record['end_time'], '%d/%m/%Y %H:%M:%S')
-            start_time = datetime.strptime(record['start_time'], '%d/%m/%Y %H:%M:%S')
+            end_time, start_time = self.get_start_and_end_date_for_event(record)
 
             if start_time > end_time:
                 record['start_time'] = record['end_time']
 
-        return records
+            clean_records.append(record)
+
+        return clean_records
+
+    def get_start_and_end_date_for_event(self, record):
+        end_time = datetime.strptime(record['end_time'], '%d/%m/%Y %H:%M:%S')
+        start_time = datetime.strptime(record['start_time'], '%d/%m/%Y %H:%M:%S')
+        return end_time, start_time
 
     def truncate_extra_long_events(self, records, max_duration):
+        truncated_records = []
+
         for record in records:
-            if self.is_event_too_long(record, max_duration):
-                record = self.get_event_shorten_by_duration(record, max_duration)
+            end_time, start_time = self.get_start_and_end_date_for_event(record)
 
-        return records
+            if is_event_duration_less_than(start_time, end_time, max_duration):
+                truncated_records.append(record)
+            else:
+                replacement_record = self.get_event_shortened_to_max_duration(record, max_duration)
+                truncated_records.append(replacement_record)
 
-    def get_event_shorten_by_duration(self, this_event, duration_in_minutes):
+        return truncated_records
+
+    def get_event_shortened_to_max_duration(self, this_event, duration_in_minutes):
         start_time = datetime.strptime(this_event['start_time'], '%d/%m/%Y %H:%M:%S')
         end_time = start_time + timedelta(minutes=duration_in_minutes)
 
         this_event['end_time'] = end_time.strftime('%d/%m/%Y %H:%M:%S')
         return this_event
 
-    def is_event_too_long(self, this_event, max_duration):
-        start_time = datetime.strptime(this_event['start_time'], '%d/%m/%Y %H:%M:%S')
-        end_time = datetime.strptime(this_event['end_time'], '%d/%m/%Y %H:%M:%S')
-
-        return not self.is_event_duration_less_than(start_time, end_time, max_duration)
-
     def is_part_of_previous_event(self, last_event, this_event):
         end_time = datetime.strptime(last_event['end_time'], '%d/%m/%Y %H:%M:%S')
         start_time = datetime.strptime(this_event['start_time'], '%d/%m/%Y %H:%M:%S')
 
-        return self.is_event_duration_less_than(start_time, end_time, MINIMUM_MINUTES_BETWEEN_EVENTS)
-
-    def is_event_duration_less_than(self, start_time, end_time, duration_in_minutes):
-        time_delta = start_time - end_time
-
-        minutes = time_delta.total_seconds() / 60
-        return minutes <= duration_in_minutes
+        return is_event_duration_less_than(start_time, end_time, MINIMUM_MINUTES_BETWEEN_EVENTS)
 
     def init_database(self):
         db = WoofDatabase()

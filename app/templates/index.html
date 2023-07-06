@@ -27,17 +27,28 @@
 				<div id="record" class="tab-pane fade show active" aria-labelledby="record">
 					<div class="card mt-3">
 						<div class="card-body text-center">
+							<!--
 							<button id="yapping" type="button" class="btn btn-danger mb-3" onclick="woof.started('Yapping');">
 								Yapping
 							</button>
+							-->
 							<button id="barking" type="button" class="btn btn-danger mb-3" onclick="woof.started('Barking');">
 								Barking
 							</button>
 							<button id="encouraged" type="button" class="btn btn-danger mb-3" onclick="woof.started('Barking (encouraged)');">
 								Encouraged
 							</button>
-							<button id="quiet" type="button" class="btn btn-success mb-3" onclick="woof.stopped();">
+							<button id="quiet" type="button" class="btn btn-success mb-3" onclick="woof.stopped(0);">
 								All Quiet
+							</button>
+							<button id="quiet10" type="button" class="btn btn-warning mb-3" onclick="woof.stopped(10);">
+								Quiet 10m
+							</button>
+							<button id="quiet20" type="button" class="btn btn-warning mb-3" onclick="woof.stopped(20);">
+								Quiet 20m
+							</button>
+							<button id="quiet30" type="button" class="btn btn-warning mb-3" onclick="woof.stopped(30);">
+								Quiet 30m
 							</button>
 							<div id="status"></div>
 							<div id="duration"></div>

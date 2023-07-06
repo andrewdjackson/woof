@@ -32,25 +32,28 @@ def started():
     woof.record_start(data["description"])
     woof.write_record()
 
-    status = woof.record
-    if woof.written:
-        status["status"] = 200
-    else:
+    status = {"date": woof.record.date, "event": woof.record.event, "description": woof.record.description, "status": 200}
+
+    if not woof.written:
         status["status"] = 500
 
     return status
 
 @app.route('/stopped', methods=['POST'])
 def stopped():
+    duration = 0
+
+    if request.json is not None:
+        data = request.json
+        duration = int(data["duration"])
+
     woof = Woof()
-    woof.record_stop()
+    woof.record_stop(duration)
     woof.write_record()
 
-    status = woof.record
+    status = {"date": woof.record.date, "event": woof.record.event, "description": woof.record.description, "status": 200}
 
-    if woof.written:
-        status["status"] = 200
-    else:
+    if not woof.written:
         status["status"] = 500
 
     return status

@@ -41,15 +41,22 @@ export class Woof {
         return status;
     }
 
-    stopped() {
+    stopped(duration) {
         let endpoint = this._getEndpoint(Endpoints.stopped);
+        let body = {
+            duration: duration,
+        }
 
         console.info(`stopped --> ${endpoint}`)
 
-        return SendRequest('POST', endpoint)
+        return SendRequest('POST', endpoint, body)
             .then(data => this._stoppedStatus(data))
             .then(response => { return response; })
             .catch(err => this._restError(err));
+    }
+
+    _stopWithDuration(duration) {
+        console.info("stopped with duration " + duration);
     }
 
     _stoppedStatus(data) {

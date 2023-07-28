@@ -46,7 +46,8 @@ def add_duration_to_event_time(event_time: str, duration: int):
     time_now = datetime.now()
 
     if is_event_duration_less_than(dt, time_now, duration):
-        new_event_time = time_now
+        tz = pytz.timezone('Europe/London')
+        new_event_time = datetime.now(tz)
     else:
         time_duration = timedelta(minutes=duration)
         new_event_time = dt + time_duration

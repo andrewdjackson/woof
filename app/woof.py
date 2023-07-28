@@ -88,7 +88,7 @@ class Woof:
 
     def write_record(self, duration=0):
         self.db.connect()
-        if duration is 0:
+        if duration == 0:
             self.written = self.db.write(self.record)
         else:
             self.written = self.db.write_duration(duration)

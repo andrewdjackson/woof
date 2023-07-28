@@ -6,8 +6,6 @@ TEST_DATABASE = "test_woof.db"
 
 def test_connect():
     wdb = WoofDatabase(database=TEST_DATABASE)
-    assert_that(wdb.connected, equal_to(False))
-
     wdb.connect()
     assert_that(wdb.connection, not_none())
     assert_that(wdb.connected, equal_to(True))

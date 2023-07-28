@@ -7,6 +7,7 @@ class WoofDatabase():
     def __init__(self, database="woof.db"):
         self.connected = False
         self.database = database
+        self.connect()
 
     def connect(self):
         self.connection = sqlite3.connect(self.database)
@@ -38,15 +39,15 @@ class WoofDatabase():
 
         return False
 
-    def write_duration(self, duration):
+    def write_duration(self, duration) -> bool:
         if self.connected:
             record = self.read_last()
             record.event = EVENT_STOPPED
             record.date = add_duration_to_event_time(record.start_time, duration)
-            self.write(record)
+            return self.write(record)
 
 
-    def delete(self):
+    def delete(self) -> bool:
         if self.connected:
             self.cursor.execute("delete from diary where desc = ?",(EVENT_TEST))
             self.connection.commit()
@@ -68,7 +69,7 @@ class WoofDatabase():
 
         return records
 
-    def read_last(self):
+    def read_last(self) -> WoofDatabaseRecord:
         records = []
 
         if self.connected:
@@ -82,7 +83,7 @@ class WoofDatabase():
 
         return records[-1]
 
-    def initialise(self):
+    def initialise(self) -> bool:
         if self.connected:
             self.cursor.execute(
                 "create table if not exists diary ( id INTEGER PRIMARY KEY AUTOINCREMENT, start_time TEXT unique not null, end_time TEXT unique not null, description TEXT default '')"

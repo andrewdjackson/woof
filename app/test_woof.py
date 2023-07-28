@@ -1,7 +1,7 @@
 from hamcrest import *
 from woof import *
 from woof_events import *
-
+from test_woof_database import TEST_DATABASE
 
 def test_bark():
     wf = Woof()
@@ -23,7 +23,8 @@ def test_end_barking():
 
 
 def test_diary():
-    wf = Woof()
+    db = WoofDatabase(database=TEST_DATABASE)
+    wf = Woof(db=db)
     dt = wf.get_diary()
     assert_that(dt, has_length(greater_than(1)))
 

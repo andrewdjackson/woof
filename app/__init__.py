@@ -28,9 +28,12 @@ def render_index():
 @app.route('/started', methods=['POST'])
 def started():
     data = request.json
-    woof = Woof()
+    db = WoofDatabase()
+
+    woof = Woof(db)
     woof.record_start(data["description"])
     woof.write_record()
+    db.close()
 
     status = {"date": woof.record.date, "event": woof.record.event, "description": woof.record.description, "status": 200}
 
@@ -47,9 +50,11 @@ def stopped():
         data = request.json
         duration = int(data["duration"])
 
-    woof = Woof()
-    woof.record_stop(duration)
-    woof.write_record()
+    db = WoofDatabase()
+    woof = Woof(db)
+    woof.record_stop()
+    woof.write_record(duration=duration)
+    db.close()
 
     status = {"date": woof.record.date, "event": woof.record.event, "description": woof.record.description, "status": 200}
 
@@ -60,8 +65,10 @@ def stopped():
 
 @app.route('/diary', methods=['GET'])
 def diary():
-    woof = Woof()
+    db = WoofDatabase()
+    woof = Woof(db)
     diary = woof.get_diary()
+    db.close()
     return jsonify(diary)
 
 

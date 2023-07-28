@@ -1,4 +1,4 @@
-from woof_database import WoofDatabase
+from woof_database import *
 from woof_events import *
 from datetime import datetime, timedelta
 from typing import List
@@ -9,11 +9,13 @@ MAXIMUM_EVENT_DURATION = 30
 
 class Woof:
 
-    def __init__(self):
+    def __init__(self, db=None):
         self.initialised = False
         self.written = False
+        self.db = db
 
-        self.init_database()
+        if self.db is not None:
+            self.init_database()
 
         dt = get_current_date_and_time()
         self.record = WoofEvent(date=dt, event=EVENT_STARTED, description="")
@@ -24,18 +26,14 @@ class Woof:
 
         return self.record
 
-    def record_stop(self, duration: int) -> WoofEvent:
-        if duration > 0:
-            pass
-
+    def record_stop(self) -> WoofEvent:
         self.record.event = EVENT_STOPPED
         return self.record
 
     def get_diary(self) -> List[WoofDatabaseRecord]:
-        db = WoofDatabase()
-        db.connect()
-        records = db.read()
-        db.close()
+        self.db.connect()
+        records = self.db.read()
+        self.db.close()
 
         records = self.clean_invalid_durations(records)
         return self.concatenate_events(records)
@@ -84,13 +82,14 @@ class Woof:
         return is_event_duration_less_than(start_time, end_time, MINIMUM_MINUTES_BETWEEN_EVENTS)
 
     def init_database(self):
-        db = WoofDatabase()
-        db.connect()
-        self.initialised = db.initialise()
-        db.close()
+        self.db.connect()
+        self.initialised = self.db.initialise()
+        self.db.close()
 
-    def write_record(self):
-        db = WoofDatabase()
-        db.connect()
-        self.written = db.write(self.record)
-        db.close()
+    def write_record(self, duration=0):
+        self.db.connect()
+        if duration is 0:
+            self.written = self.db.write(self.record)
+        else:
+            self.written = self.db.write_duration(duration)
+        self. db.close()

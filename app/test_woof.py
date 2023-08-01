@@ -29,6 +29,12 @@ def test_diary():
     assert_that(dt, has_length(greater_than(1)))
 
 
+def test_event_5_minute_duration():
+    wf = Woof()
+    records = []
+    records.append(WoofDatabaseRecord(id=0, start_time="01/01/2000 11:00:00", end_time="01/01/2000 10:00:00", description=EVENT_TEST))
+
+    
 def test_event_duration_is_valid():
     wf = Woof()
     records = []

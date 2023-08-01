@@ -43,13 +43,14 @@ def get_start_and_end_date_for_event(record: WoofDatabaseRecord):
 
 def add_duration_to_event_time(event_time: str, duration: int):
     dt = datetime.strptime(event_time, '%d/%m/%Y %H:%M:%S')
-    time_now = datetime.now()
+    #time_now = datetime.now()
 
-    if is_event_duration_less_than(dt, time_now, duration):
-        tz = pytz.timezone('Europe/London')
-        new_event_time = datetime.now(tz)
-    else:
-        time_duration = timedelta(minutes=duration)
-        new_event_time = dt + time_duration
+    #if is_event_duration_less_than(dt, time_now, duration):
+    #    tz = pytz.timezone('Europe/London')
+    #    new_event_time = datetime.now(tz)
+    #else:
+
+    time_duration = timedelta(minutes=duration)
+    new_event_time = dt + time_duration
 
     return new_event_time.strftime("%d/%m/%Y %H:%M:%S")

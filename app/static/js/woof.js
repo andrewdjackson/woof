@@ -51,6 +51,7 @@ export class Woof {
 
         return SendRequest('POST', endpoint, body)
             .then(data => this._stoppedStatus(data))
+            .then(data => this._flashButton(duration))
             .then(response => { return response; })
             .catch(err => this._restError(err));
     }
@@ -64,6 +65,14 @@ export class Woof {
         this._stopDurationTimer();
         this._updateStatus(data);
         return data;
+    }
+
+    _flashButton(duration) {
+        const id = document.getElementById(`quiet${duration}`);
+        addClass(id, 'flash');
+        setTimeout(function () {
+            removeClass(id, 'flash');
+        }, 200);
     }
 
     getDiary() {

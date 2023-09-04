@@ -72,7 +72,7 @@ export class Woof {
         addClass(id, 'flash');
         setTimeout(function () {
             removeClass(id, 'flash');
-        }, 200);
+        }, 300);
     }
 
     getDiary() {

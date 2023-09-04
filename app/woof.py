@@ -3,7 +3,7 @@ from woof_events import *
 from datetime import datetime, timedelta
 from typing import List
 
-MINIMUM_MINUTES_BETWEEN_EVENTS = 5
+MINIMUM_MINUTES_BETWEEN_EVENTS = 2
 MAXIMUM_EVENT_DURATION = 30
 
 
@@ -48,7 +48,7 @@ class Woof:
                 last_event = record
             else:
                 this_event = record
-                # compare the last event with this one, if it's within 5 minutes
+                # compare the last event with this one, if it's within 2 minutes
                 # then make update the end time of the last event to be the end time of this event
                 # this means the last event is now concatenated and the next event will be compared
                 # to see if the period needs extending again

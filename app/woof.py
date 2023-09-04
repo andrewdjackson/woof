@@ -36,7 +36,8 @@ class Woof:
         self.db.close()
 
         records = self.clean_invalid_durations(records)
-        return self.concatenate_events(records)
+        #return self.concatenate_events(records)
+        return records
 
     def concatenate_events(self, records: List[WoofDatabaseRecord]) -> List[WoofDatabaseRecord]:
         concatenated_records = []

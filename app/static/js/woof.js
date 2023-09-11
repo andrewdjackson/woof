@@ -183,7 +183,7 @@ export class Woof {
             return "#e8d559"
         }
 
-        if (count <= 6) {
+        if (count <= 5) {
             return "rgba(248,182,69,0.9)"
         }
 

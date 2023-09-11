@@ -175,15 +175,15 @@ export class Woof {
     }
 
     _getColor(count) {
-        if (count <= 1) {
+        if (count <= 3) {
             return "#78bc0a"
         }
 
-        if (count <= 3) {
+        if (count <= 4) {
             return "#e8d559"
         }
 
-        if (count <= 5) {
+        if (count <= 6) {
             return "rgba(248,182,69,0.9)"
         }
 

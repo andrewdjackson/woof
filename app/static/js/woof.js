@@ -156,7 +156,7 @@ export class Woof {
             if (datesAreOnTheSameDay(start_time, currentDay)) {
                 if (elapsed > 1) {
                     // increment for every 2 minutes of barking
-                    count = Math.ceil(elapsed / 2);
+                    count += Math.ceil(elapsed / 2);
                 }
             } else {
                 count = 0;

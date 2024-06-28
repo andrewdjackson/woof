@@ -127,7 +127,7 @@ export class Woof {
                 let endTime = formatEventTime(event.endDate);
 
                 content += '<div class="event-tooltip-content">'
-                    + `<div class="event-description" style="color:${event.color}">${startTime} - ${endTime} (${event.totalElapsed}) ${event.description}</div>`
+                    + `<div class="event-description" style="color:${event.color}">${startTime} - ${endTime} ${event.description}</div>`
                     + '</div>';
             }
 

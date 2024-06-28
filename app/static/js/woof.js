@@ -127,7 +127,7 @@ export class Woof {
                 let endTime = formatEventTime(event.endDate);
 
                 content += '<div class="event-tooltip-content">'
-                    + `<div class="event-description" style="color:${event.color}">${startTime} - ${endTime} ${event.description}</div>`
+                    + `<div class="event-description" style="color:${event.color}">${startTime} - ${endTime} (${event.totalElapsed}) ${event.description}</div>`
                     + '</div>';
             }
 
@@ -146,6 +146,7 @@ export class Woof {
         let calendarData = []
         let currentDay = undefined;
         let count = 0;
+        let totalElapsed = 0;
 
         for (let i= 0; i < data.length; i++) {
             let record = data[i]
@@ -157,9 +158,11 @@ export class Woof {
                 if (elapsed > 1) {
                     // increment for every 2 minutes of barking
                     count += Math.ceil(elapsed / 2);
+                    totalElapsed += elapsed;
                 }
             } else {
                 count = 0;
+                totalElapsed = 0;
                 currentDay = start_time;
             }
 
@@ -171,7 +174,8 @@ export class Woof {
                 count: count,
                 description: record.description,
                 startDate:start_time,
-                endDate:end_time
+                endDate:end_time,
+                totalElapsed: totalElapsed
             });
         }
 

@@ -180,11 +180,11 @@ export class Woof {
 
     _getColor(count) {
         if (count <= 3) {
-            return "#78bc0a"
+            return "rgba(120,188,10,0.9)"
         }
 
         if (count <= 4) {
-            return "#e8d559"
+            return "rgba(206,232,89,0.8)"
         }
 
         if (count <= 5) {
@@ -192,10 +192,10 @@ export class Woof {
         }
 
         if (count <= 7) {
-            return "#ea4b37"
+            return "rgba(208,27,27,0.6)"
         }
 
-        return "#710b0b"
+        return "rgba(238,16,16,0.9)"
     }
 
     _getDateFromString(dateString) {

@@ -149,17 +149,21 @@ export class Woof {
 
         for (let i= 0; i < data.length; i++) {
             let record = data[i]
-            let start_time = this._getDateFromString(record.start_time);
-            let end_time = this._getDateFromString(record.end_time);
+            const start_time = this._getDateFromString(record.start_time);
+            const end_time = this._getDateFromString(record.end_time);
+            const elapsed = Math.ceil((start_time.getTime() - end_time.getTime()) / 6000);
 
             if (datesAreOnTheSameDay(start_time, currentDay)) {
-                count++;
+                if (elapsed > 1) {
+                    // increment for every 2 minutes of barking
+                    count = Math.ceil(elapsed / 2);
+                }
             } else {
                 count = 0;
                 currentDay = start_time;
             }
 
-            let color = this._getColor(count);
+            const color = this._getColor(count);
 
             calendarData.push({
                 id:i,
@@ -187,7 +191,11 @@ export class Woof {
             return "rgba(248,182,69,0.9)"
         }
 
-        return "#ea4b37"
+        if (count <= 7) {
+            return "#ea4b37"
+        }
+
+        return "#710b0b"
     }
 
     _getDateFromString(dateString) {

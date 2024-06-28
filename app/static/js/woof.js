@@ -151,7 +151,7 @@ export class Woof {
             let record = data[i]
             const start_time = this._getDateFromString(record.start_time);
             const end_time = this._getDateFromString(record.end_time);
-            const elapsed = Math.ceil((start_time.getTime() - end_time.getTime()) / 6000);
+            const elapsed = Math.abs(Math.ceil((end_time.getTime() - start_time.getTime()) / 60000));
 
             if (datesAreOnTheSameDay(start_time, currentDay)) {
                 if (elapsed > 1) {

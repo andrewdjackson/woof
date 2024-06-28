@@ -155,14 +155,14 @@ export class Woof {
             const elapsed = Math.abs(Math.ceil((end_time.getTime() - start_time.getTime()) / 60000));
 
             if (datesAreOnTheSameDay(start_time, currentDay)) {
-                if (elapsed > 1) {
+                if (elapsed > 0) {
                     // increment for every 2 minutes of barking
                     count += Math.ceil(elapsed / 2);
                     totalElapsed += elapsed;
                 }
             } else {
-                count = 0;
-                totalElapsed = 0;
+                count = Math.ceil(elapsed / 2);
+                totalElapsed = elapsed;
                 currentDay = start_time;
             }
 

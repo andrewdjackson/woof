@@ -192,11 +192,11 @@ export class Woof {
         }
 
         if (count <= 5) {
-            return "rgba(248,182,69,0.9)"
+            return "rgba(248,218,69,0.9)"
         }
 
         if (count <= 7) {
-            return "rgba(208,27,27,0.6)"
+            return "rgba(255,174,20,0.9)"
         }
 
         return "rgba(238,16,16,0.9)"

@@ -94,8 +94,6 @@ export class Woof {
     }
 
     _displayCalendar(data) {
-        let currentYear = new Date().getFullYear();
-
         var calendar = new Calendar('#calendar', {
             style: "background",
             enableContextMenu: true,
@@ -159,6 +157,8 @@ export class Woof {
                     // increment for every 2 minutes of barking
                     count += Math.ceil(elapsed / 2);
                     totalElapsed += elapsed;
+                    // add a weighting to the count for early or late events
+                    count += this._getTimeWeighting(start_time);
                 }
             } else {
                 count = Math.ceil(elapsed / 2);
@@ -180,6 +180,24 @@ export class Woof {
         }
 
         return calendarData;
+    }
+
+    _getTimeWeighting(start_time) {
+        let early = start_time;
+        early.setHours(8);
+        early.setMinutes(0);
+        early.setMilliseconds(0);
+
+        let late = start_time;
+        late.setHours(21);
+        late.setMinutes(0);
+        late.setMilliseconds(0);
+
+        if ((start_time <= early)||(start_time >= late)) {
+            return 2;
+        }
+
+        return 0;
     }
 
     _getColor(count) {
@@ -213,8 +231,6 @@ export class Woof {
     }
 
     _createDataTable(data) {
-        let titles = ["Start Time", "End Time", "Description"];
-
         const tableHeader = "<thead class='table-dark'><tr>" +
             " <th scope='col'>Start Time</th>" +
             " <th scope='col'>End Time</th>" +

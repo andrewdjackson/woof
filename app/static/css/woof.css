@@ -2,7 +2,10 @@
     background-color: #CC251F;
     color: white;
     border: 0;
-    font-family: inherit;
+}
+
+.calendar table.month th.month-title {
+    border-radius: 5px;
 }
 
 .calendar .calendar-header .year-title:hover,
@@ -21,19 +24,30 @@
     opacity: 0.4;
 }
 
+.calendar table td,.calendar table th {
+   font-size: inherit;
+
+}
+
 .calendar .month-container {
-    height: 210px;
     font-family: inherit;
 }
 
+.calendar .months-container .month-container.month-2 {
+    padding-bottom: 5px;
+}
+
 .calendar table.month {
-    height: 100%;
 }
 
 .calendar table.month .month-title {
     background-color: #CC251F;
     color: white;
     padding: 5px;
+}
+
+.calendar table.month tr td,.calendar table.month tr th {
+    border-radius: 5px;
 }
 
 .calendar table.month .day-header {

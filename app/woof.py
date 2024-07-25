@@ -1,6 +1,5 @@
-from woof_database import *
 from woof_events import *
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import List
 
 MINIMUM_MINUTES_BETWEEN_EVENTS = 2
@@ -36,7 +35,6 @@ class Woof:
         self.db.close()
 
         records = self.clean_invalid_durations(records)
-        #return self.concatenate_events(records)
         return records
 
     def concatenate_events(self, records: List[WoofDatabaseRecord]) -> List[WoofDatabaseRecord]:
@@ -93,4 +91,4 @@ class Woof:
             self.written = self.db.write(self.record)
         else:
             self.written = self.db.write_duration(duration)
-        self. db.close()
+        self.db.close()

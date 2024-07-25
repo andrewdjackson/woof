@@ -1,6 +1,8 @@
 import {Endpoints, SendRequest} from "./woof-server.js"
-import {addClass, removeClass, formatEventTime, datesAreOnTheSameDay} from "./woof-helpers.js"
+import {addClass, removeClass} from "./woof-helpers.js"
 import {Table} from "./table.js";
+import {WoofCalendar} from "./woof-calendar.js";
+import {Diary} from "./diary.js";
 
 export const buttons = {
     yapping : "yapping",
@@ -15,8 +17,14 @@ export const events = {
 };
 
 export class Woof {
-    constructor(uri) {
-        this._baseUri = uri;
+    woofCalendar;
+    woofTable;
+    _baseUri;
+    elapsedTime;
+    durationInterval;
+
+    constructor() {
+        this._baseUri = window.location.href.split("/").slice(0, 3).join("/");
         this.durationInterval;
         this.elapasedTime = 0;
     }
@@ -39,204 +47,49 @@ export class Woof {
         console.info("started status " + JSON.stringify(data));
         this._startDurationTimer();
         this._updateStatus(data);
-        return status;
     }
 
-    stopped(duration) {
+    stopped(event) {
+        console.log(event);
+
         let endpoint = this._getEndpoint(Endpoints.stopped);
         let body = {
-            duration: duration,
+            action: event.dataset.action,
+            duration: event.dataset.duration,
         }
 
         console.info(`stopped --> ${endpoint}`)
 
         return SendRequest('POST', endpoint, body)
-            .then(data => this._stoppedStatus(data))
-            .then(data => this._flashButton(duration))
+            .then(response => this._stoppedStatus(response))
+            .then(response => this._flashButton(response))
             .then(response => { return response; })
             .catch(err => this._restError(err));
     }
 
-    _stopWithDuration(duration) {
-        console.info("stopped with duration " + duration);
-    }
-
-    _stoppedStatus(data) {
-        console.info("stopped status " + JSON.stringify(data));
+    _stoppedStatus(response) {
+        console.info("stopped status " + JSON.stringify(response));
         this._stopDurationTimer();
-        this._updateStatus(data);
-        return data;
+        this._updateStatus(response);
+        return response;
     }
 
-    _flashButton(duration) {
-        const id = document.getElementById(`quiet${duration}`);
+    _flashButton(response) {
+        const id = document.getElementById(`${response.action}`);
         addClass(id, 'flash');
         setTimeout(function () {
             removeClass(id, 'flash');
         }, 300);
     }
 
-    getDiary() {
-        let endpoint = this._getEndpoint(Endpoints.diary);
+    async getDiary() {
+        const diary = new Diary();
+        await diary.loadEvents();
 
-        console.info(`diary --> ${endpoint}`)
+        this.woofCalendar = new WoofCalendar(diary);
 
-        return SendRequest('GET', endpoint)
-            .then(data => this._diaryStatus(data))
-            .then(response => { return response; })
-            .catch(err => this._restError(err));
-    }
-
-    _diaryStatus(data) {
-        console.info("diary status " + JSON.stringify(data));
-        this._displayCalendar(data);
-        this._createDataTable(data);
-        return data;
-    }
-
-    _displayCalendar(data) {
-        var calendar = new Calendar('#calendar', {
-            style: "background",
-            enableContextMenu: true,
-            enableRangeSelection: false,
-            mouseOnDay: this._showEventsForDay,
-            mouseOutDay: function(e) {
-                if(e.events.length > 0) {
-                    $(e.element).popover('hide');
-                }
-            },
-            dayContextMenu: function(e) {
-                $(e.element).popover('hide');
-            },
-            dataSource: this._getCalendarData(data)
-        });
-
-        calendar.setMinDate(new Date("08/01/2022"));
-        calendar.setMaxDate(new Date());
-        calendar.setDataSource = this._getCalendarData(data);
-    }
-
-    _showEventsForDay(e) {
-        if(e.events.length > 0) {
-            var content = '';
-
-            for(var i in e.events) {
-                let event = e.events[i];
-                let startTime = formatEventTime(event.startDate);
-                let endTime = formatEventTime(event.endDate);
-
-                content += '<div class="event-tooltip-content">'
-                    + `<div class="event-description" style="color:${event.color}">${startTime} - ${endTime} ${event.description}</div>`
-                    + '</div>';
-            }
-
-            $(e.element).popover({
-                trigger: 'manual',
-                container: 'body',
-                html:true,
-                content: content
-            });
-
-            $(e.element).popover('show');
-        }
-    }
-
-    _getCalendarData(data) {
-        let calendarData = []
-        let currentDay = undefined;
-        let count = 0;
-        let totalElapsed = 0;
-
-        for (let i= 0; i < data.length; i++) {
-            let record = data[i]
-            const start_time = this._getDateFromString(record.start_time);
-            const end_time = this._getDateFromString(record.end_time);
-            const elapsed = Math.abs(Math.ceil((end_time.getTime() - start_time.getTime()) / 60000));
-
-            if (datesAreOnTheSameDay(start_time, currentDay)) {
-                if (elapsed > 0) {
-                    // increment for every 2 minutes of barking
-                    count += Math.ceil(elapsed / 2);
-                    totalElapsed += elapsed;
-                    // add a weighting to the count for early or late events
-                    count += this._getTimeWeighting(start_time);
-                }
-            } else {
-                count = Math.ceil(elapsed / 2);
-                totalElapsed = elapsed;
-                currentDay = start_time;
-            }
-
-            const color = this._getColor(count);
-
-            calendarData.push({
-                id:i,
-                color: color,
-                count: count,
-                description: record.description,
-                startDate:start_time,
-                endDate:end_time,
-                totalElapsed: totalElapsed
-            });
-        }
-
-        return calendarData;
-    }
-
-    _getTimeWeighting(start_time) {
-        let early = start_time;
-        early.setHours(8);
-        early.setMinutes(0);
-        early.setMilliseconds(0);
-
-        let late = start_time;
-        late.setHours(21);
-        late.setMinutes(0);
-        late.setMilliseconds(0);
-
-        if ((start_time <= early)||(start_time >= late)) {
-            return 2;
-        }
-
-        return 0;
-    }
-
-    _getColor(count) {
-        if (count <= 3) {
-            return "rgba(120,188,10,0.9)"
-        }
-
-        if (count <= 4) {
-            return "rgba(206,232,89,0.8)"
-        }
-
-        if (count <= 5) {
-            return "rgba(248,218,69,0.9)"
-        }
-
-        if (count <= 7) {
-            return "rgba(255,174,20,0.9)"
-        }
-
-        return "rgba(238,16,16,0.9)"
-    }
-
-    _getDateFromString(dateString) {
-        let dateDay = dateString.slice(0,2);
-        let dateMonth = dateString.slice(3,5);
-        let dateYear = dateString.slice(6,10);
-        let dateTime = dateString.slice(11);
-
-        let newDateString = `${dateYear}/${dateMonth}/${dateDay} ${dateTime}`;
-        return new Date(newDateString);
-    }
-
-    _createDataTable(data) {
-        const dataTable = new Table(data);
-
-        let table = "<table class='table table-responsive-md table-striped table-bordered border-secondary'>" + dataTable.header + dataTable.body + "</table>"
-        const id = document.getElementById("diaryTable");
-        id.innerHTML = `${table}`;
+        this.woofTable = new Table(diary);
+        this.woofTable.updateDisplay();
     }
 
     _getEndpoint(endpoint) {

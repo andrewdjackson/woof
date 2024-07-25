@@ -17,7 +17,6 @@
 
 	import('/static/js/woof.js')
 			.then((Module) => {
-				let uri = window.location.href.split("/").slice(0, 3).join("/");
-				woof = new Module.Woof(uri);
+				woof = new Module.Woof();
 			});
 </script>

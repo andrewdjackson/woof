@@ -8,18 +8,12 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(basedir)
 sys.path.append(basedir + "/app")
 
-from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session, flash, make_response, jsonify
-from flask_wtf.csrf import CSRFProtect, CSRFError
+from flask import Flask, render_template, request, jsonify
 from woof import Woof
 from woof_database import WoofDatabase
 
 app = Flask(__name__)
 app.secret_key = b'Woof2-0-2-2'
-#csrf = CSRFProtect(app)
-
-@app.errorhandler(CSRFError)
-def csrf_error(e):
-    return e.description, 400
 
 @app.route('/', methods=['GET'])
 def render_index():
@@ -45,9 +39,11 @@ def started():
 @app.route('/stopped', methods=['POST'])
 def stopped():
     duration = 0
+    action = ""
 
     if request.json is not None:
         data = request.json
+        action = data["action"]
         duration = int(data["duration"])
 
     db = WoofDatabase()
@@ -56,7 +52,7 @@ def stopped():
     woof.write_record(duration=duration)
     db.close()
 
-    status = {"date": woof.record.date, "event": woof.record.event, "description": woof.record.description, "status": 200}
+    status = {"date": woof.record.date, "event": woof.record.event, "description": woof.record.description, "status": 200, "action": action}
 
     if not woof.written:
         status["status"] = 500

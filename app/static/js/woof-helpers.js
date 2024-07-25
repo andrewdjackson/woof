@@ -34,7 +34,7 @@ export function formatWithLeadingZero(value) {
     return('0' + value).slice(-2);
 }
 
-export function datesAreOnTheSameDay(first, second) {
+export function isEventOnTheSameDay(first, second) {
     try {
         return first.getFullYear() === second.getFullYear() &&
             first.getMonth() === second.getMonth() &&

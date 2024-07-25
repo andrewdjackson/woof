@@ -55,3 +55,35 @@
     background-color: green !important;
 }
 
+
+.quiet {
+    color: rgba(206,232,89,0.8);
+}
+
+.slightly_noisy {
+    color: rgba(120,188,10,0.9);
+}
+
+.acceptable {
+    color: rgb(127, 131, 122);
+}
+
+.noisy {
+    color: rgba(248,218,69,0.9);
+}
+
+.very_noisy {
+    color: rgba(255,174,20,0.9);
+}
+
+.unacceptable {
+    color: rgb(255, 138, 20);
+}
+
+.excessively_noisy {
+    color: rgba(238,16,16,0.9);
+}
+
+.unsocial {
+    color: rgba(238,16,16,1.0);
+}

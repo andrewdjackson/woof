@@ -1,5 +1,6 @@
 import {Endpoints, SendRequest} from "./woof-server.js"
 import {addClass, removeClass, formatEventTime, datesAreOnTheSameDay} from "./woof-helpers.js"
+import {Table} from "./table.js";
 
 export const buttons = {
     yapping : "yapping",
@@ -231,23 +232,9 @@ export class Woof {
     }
 
     _createDataTable(data) {
-        const tableHeader = "<thead class='table-dark'><tr>" +
-            " <th scope='col'>Start Time</th>" +
-            " <th scope='col'>End Time</th>" +
-            " <th scope='col'>Description</th>" +
-            "</tr></thead>"
+        const dataTable = new Table(data);
 
-        let tableBody = "<tbody>";
-
-        for (let i =0; i < data.length; i++) {
-            let record = data[i]
-            tableBody += `<tr><td>${record.start_time}</td><td>${record.end_time}</td><td>${record.description}</td></tr>`
-        }
-
-        tableBody += "</tbody>"
-
-        let table = "<table class='table table-responsive-md table-striped table-bordered border-secondary'>" + tableHeader + tableBody + "</table>"
-
+        let table = "<table class='table table-responsive-md table-striped table-bordered border-secondary'>" + dataTable.header + dataTable.body + "</table>"
         const id = document.getElementById("diaryTable");
         id.innerHTML = `${table}`;
     }

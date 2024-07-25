@@ -29,8 +29,6 @@ export class Diary {
             const event = new WoofEvent(data[i]);
             this.events.push(event);
         }
-
-        console.log(this.events);
     }
 
     _getEndpoint(endpoint) {

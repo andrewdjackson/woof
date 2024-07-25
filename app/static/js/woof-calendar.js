@@ -8,20 +8,35 @@ export class WoofCalendar {
 
     constructor(diary) {
         this.diary = diary;
-        this._createCalendar()
+        this.calendar = this._createCalendar();
+        this.calendar.setCustomDayRenderer(this._customRender.bind(this));
     }
 
     _createCalendar() {
-        this.calendar = new Calendar(CALENDAR_ELEMENT, {
+        return new Calendar(CALENDAR_ELEMENT, {
             style: "background",
             enableContextMenu: true,
             enableRangeSelection: false,
             minDate: new Date("08/01/2022"),
             maxDate: new Date(),
-            dataSource: this._getCalendarData(),
+            dataSource: this._convertToCalendarData(),
             mouseOnDay: this._showEventsForDay,
             mouseOutDay: this._hideDayView,
         });
+    }
+
+    _customRender(cellContent, currentDate) {
+        const events = this.calendar.getEvents(currentDate);
+        for (const event of events) {
+            if (event.textClass === "constant") {
+                cellContent.classList.add(`text-${event.textClass}`);
+                break;
+            }
+            if (event.textClass === "excessively_noisy") {
+                cellContent.classList.add(`text-${event.textClass}`);
+                break;
+            }
+        }
     }
 
     _showEventsForDay(calendarDay) {
@@ -56,7 +71,7 @@ export class WoofCalendar {
         }
     }
 
-    _getCalendarData() {
+    _convertToCalendarData() {
         let calendarData = []
         let currentDay = undefined;
         let totalScore = 0;
@@ -82,6 +97,7 @@ export class WoofCalendar {
             const event = {
                 id:i,
                 color: calendarColor.color,
+                textClass: calendarColor.class,
                 class: this._getUnsocialClass(record),
                 description: record.description,
                 startDate: record.start_time,
@@ -112,22 +128,26 @@ export class WoofCalendar {
 
     _getColor(count) {
         if (count <= 3) {
-            return {class: "quiet", color: "rgba(120,188,10,0.9)"};
+            return {class: "slightly_noisy", color: "rgba(206,232,89,0.8)"};
             //return "rgba(120,188,10,0.9)"
         }
 
         if (count <= 4) {
-            return {class: "slightly_noisy", color: "rgba(206,232,89,0.8)"};
+            return {class: "quiet", color: "rgba(155,213,60,0.9)"};
         }
 
         if (count <= 5) {
-            return {class: "noisy", color: "rgba(248,218,69,0.9)"};
+            return {class: "noisy", color: "rgba(225,192,29,0.9)"};
         }
 
         if (count <= 7) {
-            return {class: "very_noisy", color: "rgba(255,174,20,0.9)"};
+            return {class: "very_noisy", color: "rgba(238,159,8,0.9)"};
         }
 
-        return {class: "excessively_noisy", color: "rgba(238,16,16,0.9)"};
+        if (count <= 18) {
+            return {class: "excessively_noisy", color: "rgba(238,16,16,0.9)"};
+        }
+
+        return {class: "constant", color: "rgba(141,10,10,0.9)"};
     }
 }

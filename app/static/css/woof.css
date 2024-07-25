@@ -80,10 +80,30 @@
     color: rgb(255, 138, 20);
 }
 
+.text-unacceptable {
+    color: rgb(255, 255, 255);
+}
+
 .excessively_noisy {
     color: rgba(238,16,16,0.9);
 }
 
+.text-excessively_noisy {
+    color: rgb(255, 255, 255);
+}
+
 .unsocial {
     color: rgba(238,16,16,1.0);
+}
+
+.text-unsocial {
+    color: rgb(255, 255, 255);
+}
+
+.constant {
+    color: rgba(141,10,10,0.9);
+}
+
+.text-constant {
+    color: rgb(255, 255, 255);
 }
